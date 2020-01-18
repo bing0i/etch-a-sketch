@@ -1,20 +1,22 @@
-function createSquares(numberOfSquares = 16, size = 960) {
-    let sizeOfSquare = size / numberOfSquares;
+function createSquares(numberOfSquares = 16, size = 880) {
+    let sizeOfSquare = Math.trunc(size / numberOfSquares);
+    console.log(sizeOfSquare);
     const squares = document.querySelector('#squares');
-    squares.style.width = size;
-    squares.style.height = size;
+    squares.style.height = size.toString() + 'px';
     for (let i = 0; i < numberOfSquares; ++i) {
         for (let j = 0; j < numberOfSquares; ++j) {
             const square = document.createElement('div');
             square.classList.add('square');
-            square.style.width = `${sizeOfSquare}px`;
-            square.style.height = `${sizeOfSquare}px`;
-            square.style.backgroundColor = 'black';
+            square.style.width = sizeOfSquare.toString() + 'px';
+            square.style.height = sizeOfSquare.toString() + 'px';
+            square.style.backgroundColor = 'white';
+            square.style.border = '0.5px solid #333333' /*somehow 0.5 fit perfectly*/
             squares.appendChild(square);
         }
         const newLine = document.createElement('br');
         squares.appendChild(newLine);
     }
+    console.log(squares.style.height);
 }
 
 function getRandomNumber(max) {
@@ -43,7 +45,7 @@ function getRGBValue(color) {
 function changeBackgroundColor() {
     const squares = Array.from(document.querySelectorAll('.square'));
     squares.forEach(square => square.addEventListener('mouseover', function(e) {
-        if (square.style.backgroundColor === 'black') {
+        if (square.style.backgroundColor === 'white') {
             let color = randomRGBColor();
             square.style.backgroundColor = color;
         }
@@ -52,10 +54,9 @@ function changeBackgroundColor() {
             for (let i = 0; i < 3; ++i)
                 if (colorArray[i] <= 0) {
                     colorArray[i] = 0;
-                    return;
                 }
                 else
-                    colorArray[i] = colorArray[i] - colorArray[i] * 0.3;
+                    colorArray[i] = 0.7 * colorArray[i];
             square.style.backgroundColor = 'rgb(' + colorArray[0] + ',' + colorArray[1] + ',' + colorArray[2] + ')';
         }
     }));
@@ -69,16 +70,21 @@ function deleteSquares() {
 }
 
 function changeNumberOfSquares() {
-    deleteSquares();
     let numberOfSquares = prompt('How many squares per side?');
-    if (numberOfSquares === '' || numberOfSquares === null)
+    if (numberOfSquares === '') {
+        deleteSquares();
         createSquares();
-    else
-        createSquares(numberOfSquares, 960);
+    }
+    else if (numberOfSquares === null)
+        return;
+    else {
+        deleteSquares();
+        createSquares(numberOfSquares, 880);
+    }
     changeBackgroundColor();
 }
 
-function resetSketchpad(color = 'black') {
+function resetSketchpad(color = 'white') {
     const squares = Array.from(document.querySelectorAll('.square'));
     squares.forEach(square => square.style.backgroundColor = color);
 }
